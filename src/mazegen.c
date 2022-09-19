@@ -1,5 +1,8 @@
 #include "global.h"
+#include "fieldmap.h"
 #include "malloc.h"
+#include "mazegen.h"
+#include "mgba_printf/mgba.h"
 #include "random.h"
 
 // ***********************************************************************
@@ -24,6 +27,7 @@ struct MapChunk {
     u16 *map;
 };
 
+
 struct Cell
 {
     u16 x:4;
@@ -42,8 +46,6 @@ struct Maze
 static void InitMaze(struct Maze *maze);
 static u16 GetUnvisitedNeighbors(u16 x, u16 y, struct Maze *maze);
 static u16 SelectRandomBit(u16 bitfield);
-static void GenerateMaze(struct Maze *maze, u32 width, u32 height);
-static void CopyMapLayout(u16 x, u16 y, struct MapLayout *src, struct MapLayout *dest)
 
 // Initializes the cells in a Maze struct as unvisited and with 
 // correct coordinates.
@@ -84,7 +86,7 @@ static u16 GetUnvisitedNeighbors(u16 x, u16 y, struct Maze *maze)
 // Returns a random 'on' bit in a given bitfield.
 static u16 SelectRandomBit(u16 bitfield)
 {
-    u16 i, count = 0;
+    s32 i, count = 0;
     static u16 options[16];
     
     // Find 'on' bits and store in array to pick from.
@@ -101,7 +103,7 @@ static u16 SelectRandomBit(u16 bitfield)
 }
 
 // Generates a maze of given width and height into an empty Maze struct.
-static void GenerateMaze(struct Maze *maze, u32 width, u32 height)
+static void GenerateMaze(struct Maze *maze, u16 width, u16 height)
 {
     u32 x, y, candidates, max, top, visited;
     struct Cell *origin, *stack[width * height];
@@ -112,7 +114,7 @@ static void GenerateMaze(struct Maze *maze, u32 width, u32 height)
     visited = 1;
     
     // init maze
-    maze = malloc(sizeof *maze);
+    //maze = malloc(sizeof *maze);
     maze->width = width;
     maze->height = height;
     InitMaze(maze);
@@ -176,15 +178,84 @@ static void GenerateMaze(struct Maze *maze, u32 width, u32 height)
     }
 }
 
-//Copies a map chunk onto a map layout at a given (x, y).
-static void CopyMapLayout(u16 x, u16 y, struct MapLayout *src, struct MapLayout *dest)
+// Copies a chunk of a map layout and returns it as a MapChunk struct.
+static struct MapChunk CopyMapChunk(u16 x, u16 y, u16 width, u16 height, const struct MapLayout *src)
 {
-    u32 i, j;
-    for (i = 0; i < src->height; i++)
+    s32 i, j;
+    struct MapChunk chunk;
+
+    chunk.width = width;
+    chunk.height = height;
+    chunk.map = malloc(sizeof(u16) * width * height);
+
+    for (i = 0; i < height; i++)
     {
-        for (j = 0; j < src->width; j++)
+        for (j = 0; j < width; j++)
         {
-            dest->map[x+j + (y + i)*src->width] = src->map[j + i*src->width];
+            chunk.map[j + width * i] = src->map[src->width * (y + i) + x + j];
+        }
+    }
+
+    return chunk;
+}
+
+// Pastes a map chunk over gBackupMapLayout at the given (x, y).
+static void PasteMapChunk(u16 x, u16 y, struct MapChunk *chunk)
+{
+    u16 *src, *dest;
+    int i;
+    src = chunk->map;
+    dest = gBackupMapLayout.map;
+    dest += gBackupMapLayout.width * (7 + y) + x + MAP_OFFSET;
+    for (i = 0; i < chunk->height; i++)
+    {
+        CpuCopy16(src, dest, chunk->width * 2);
+        dest += gBackupMapLayout.width;
+        src += chunk->width;
+    }
+}
+
+// The coordinates of map chunks on a map template.
+static const u16 sMapChunkCoordinateTable[][2] = {
+    [EMPTY] = {0, 0},
+    [NORTH] = {0, 1},
+    [EAST] = {0, 2},
+    [SOUTH] = {0, 3},
+    [WEST] = {1, 0},
+    [NORTH | EAST] = {1, 1},
+    [NORTH | SOUTH] = {1, 2},
+    [NORTH | WEST] = {1, 3},
+    [EAST | SOUTH] = {2, 0},
+    [EAST | WEST] = {2, 1},
+    [SOUTH | WEST] = {2, 2},
+    [NORTH | EAST | SOUTH] = {2, 3},
+    [NORTH | EAST | WEST] = {3, 0},
+    [NORTH | SOUTH | WEST] = {3, 1},
+    [EAST | SOUTH | WEST] = {3, 2},
+    [NORTH | EAST | SOUTH | WEST] = {3, 3},
+};
+
+// Generates a maze from a template layout containing map chunks. The width
+// and height describe the "chunks" that make up the map.
+void GenerateMazeMap(u16 width, u16 height, const struct MapLayout *template)
+{
+    s32 x, y, chunkWidth, chunkHeight, connections;
+    struct Maze maze;
+    struct MapChunk chunk;
+
+    GenerateMaze(&maze, width, height);
+    chunkWidth = 10;
+    chunkHeight = 10;
+
+    for (x = 0; x < width; x++)
+    {
+        for (y = 0; y < height; y++)
+        {
+            connections = maze.cells[x][y].connections;
+            chunk = CopyMapChunk(sMapChunkCoordinateTable[connections][0] * chunkWidth,   \
+                                    sMapChunkCoordinateTable[connections][1] * chunkHeight, \
+                                    chunkWidth, chunkHeight, template);
+            PasteMapChunk(x * chunkWidth, y * chunkHeight, &chunk);
         }
     }
 }

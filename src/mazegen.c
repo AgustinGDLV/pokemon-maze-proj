@@ -6,7 +6,7 @@
 // mazegen.c
 // -----------------------------------------------------------------------
 // This file contains the functions required to randomly generate a maze
-// as a series of connections between cells.
+// and to stitch it together as a map in-game.
 // ***********************************************************************
 
 #define MAX_MAZE_WIDTH      10
@@ -17,6 +17,12 @@
 #define EAST    (1 << 1)
 #define SOUTH   (1 << 2)
 #define WEST    (1 << 3)
+
+struct MapChunk {
+    u16 width;
+    u16 height;
+    u16 *map;
+};
 
 struct Cell
 {
@@ -37,6 +43,7 @@ static void InitMaze(struct Maze *maze);
 static u16 GetUnvisitedNeighbors(u16 x, u16 y, struct Maze *maze);
 static u16 SelectRandomBit(u16 bitfield);
 static void GenerateMaze(struct Maze *maze, u32 width, u32 height);
+static void CopyMapLayout(u16 x, u16 y, struct MapLayout *src, struct MapLayout *dest)
 
 // Initializes the cells in a Maze struct as unvisited and with 
 // correct coordinates.
@@ -97,7 +104,6 @@ static u16 SelectRandomBit(u16 bitfield)
 static void GenerateMaze(struct Maze *maze, u32 width, u32 height)
 {
     u32 x, y, candidates, max, top, visited;
-    struct Maze *maze = malloc(sizeof *maze);
     struct Cell *origin, *stack[width * height];
 
     // init stack
@@ -106,6 +112,7 @@ static void GenerateMaze(struct Maze *maze, u32 width, u32 height)
     visited = 1;
     
     // init maze
+    maze = malloc(sizeof *maze);
     maze->width = width;
     maze->height = height;
     InitMaze(maze);
@@ -169,8 +176,8 @@ static void GenerateMaze(struct Maze *maze, u32 width, u32 height)
     }
 }
 
-// Copies a map chunk onto a map layout at a given (x, y).
-static void CopyMapLayout(u16 x, u16 y, struct MapChunk *src, struct MapLayout *dest)
+//Copies a map chunk onto a map layout at a given (x, y).
+static void CopyMapLayout(u16 x, u16 y, struct MapLayout *src, struct MapLayout *dest)
 {
     u32 i, j;
     for (i = 0; i < src->height; i++)

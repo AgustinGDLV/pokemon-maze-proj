@@ -5,11 +5,13 @@
 #include "fldeff.h"
 #include "fldeff_misc.h"
 #include "frontier_util.h"
+#include "mazegen.h"
 #include "menu.h"
 #include "mirage_tower.h"
 #include "overworld.h"
 #include "palette.h"
 #include "pokenav.h"
+#include "random.h"
 #include "script.h"
 #include "secret_base.h"
 #include "trainer_hill.h"
@@ -109,7 +111,12 @@ static void InitMapLayoutData(struct MapHeader *mapHeader)
     gBackupMapLayout.width = width;
     height = mapLayout->height + MAP_OFFSET_H;
     gBackupMapLayout.height = height;
-    if (width * height <= MAX_MAP_DATA_SIZE)
+    if (mapHeader->mapLayoutId == Overworld_GetMapHeaderByGroupAndId(MAP_GROUP(CAVE_BASE), MAP_NUM(CAVE_BASE))->mapLayoutId)
+    {
+        SeedRng(gSaveBlock1Ptr->mazeSeed);
+        GenerateMazeMap(8, 8, Overworld_GetMapHeaderByGroupAndId(MAP_GROUP(CAVE_TEMPLATE_1), MAP_NUM(CAVE_TEMPLATE_1))->mapLayout);
+    }
+    else if (width * height <= MAX_MAP_DATA_SIZE)
     {
         InitBackupMapLayoutData(mapLayout->map, mapLayout->width, mapLayout->height);
         InitBackupMapLayoutConnections(mapHeader);

@@ -4412,16 +4412,6 @@
       "blockdata_filepath": "data/layouts/SootopolisCity_MysteryEventsHouse_1F_StairsUnblocked/map.bin"
     },
     {
-      "id": "LAYOUT_CAVE_TEMPLATE",
-      "name": "CaveTemplate_Layout",
-      "width": 40,
-      "height": 40,
-      "primary_tileset": "gTileset_General",
-      "secondary_tileset": "gTileset_Cave",
-      "border_filepath": "data/layouts/CaveTemplate/border.bin",
-      "blockdata_filepath": "data/layouts/CaveTemplate/map.bin"
-    },
-    {
       "id": "LAYOUT_CAVE_BASE",
       "name": "CaveBase_Layout",
       "width": 80,

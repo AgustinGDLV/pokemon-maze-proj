@@ -130,6 +130,13 @@ static void WarpToTruck(void)
     WarpIntoMap();
 }
 
+static void WarpToMaze(void)
+{
+    gSaveBlock1Ptr->mazeSeed = Random();
+    SetWarpDestination(MAP_GROUP(CAVE_BASE), MAP_NUM(CAVE_BASE), WARP_ID_NONE, 5, 5);
+    WarpIntoMap();
+}
+
 void Sav2_ClearSetDefault(void)
 {
     ClearSav2();
@@ -192,7 +199,7 @@ void NewGameInitData(void)
     InitDewfordTrend();
     ResetFanClub();
     ResetLotteryCorner();
-    WarpToTruck();
+    WarpToMaze();
     RunScriptImmediately(EventScript_ResetAllMapFlags);
     ResetMiniGamesRecords();
     InitUnionRoomChatRegisteredTexts();

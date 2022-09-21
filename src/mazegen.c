@@ -27,22 +27,6 @@ struct MapChunk {
     u16 *map;
 };
 
-
-struct Cell
-{
-    u16 x:4;
-    u16 y:4;
-    u16 visited:1;      // boolean
-    u16 connections:4;  // stored as bitfield
-};
-
-struct Maze
-{
-    u16 width;
-    u16 height;
-    struct Cell cells[MAX_MAZE_WIDTH][MAX_MAZE_HEIGHT];
-};
-
 // Initializes the cells in a Maze struct as unvisited and with 
 // correct coordinates.
 static void InitMaze(struct Maze *maze)
@@ -229,10 +213,10 @@ static const u16 sMapChunkCoordinateTable[][2] = {
 
 // Generates a maze from a template layout containing map chunks. The width
 // and height describe the "chunks" that make up the map.
-void GenerateMazeMap(u16 width, u16 height, const struct MapLayout *template)
+struct Maze *GenerateMazeMap(u16 width, u16 height, const struct MapLayout *template)
 {
     s32 x, y, chunkWidth, chunkHeight, connections;
-    struct Maze maze;
+    static struct Maze maze;
     struct MapChunk chunk;
 
     GenerateMaze(&maze, width, height);
@@ -250,4 +234,6 @@ void GenerateMazeMap(u16 width, u16 height, const struct MapLayout *template)
             PasteMapChunk(x * chunkWidth, y * chunkHeight, &chunk);
         }
     }
+
+    return &maze;
 }

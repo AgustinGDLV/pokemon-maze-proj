@@ -12,9 +12,6 @@
 // and to stitch it together as a map in-game.
 // ***********************************************************************
 
-#define MAX_MAZE_WIDTH      10
-#define MAX_MAZE_HEIGHT     10
-
 #define EMPTY   0
 #define NORTH   (1 << 0)
 #define EAST    (1 << 1)
@@ -33,13 +30,15 @@ static void InitMaze(struct Maze *maze)
 {
     u32 x, y;
 
-    for (x = 0; x < maze->width; x++)
+    for (x = 0; x < maze->width; ++x)
     {
-        for (y = 0; y < maze->height; y++)
+        for (y = 0; y < maze->height; ++y)
         {
             maze->cells[x][y].x = x;
             maze->cells[x][y].y = y;
+            maze->cells[x][y].distance = 0;
             maze->cells[x][y].visited = FALSE;
+            maze->cells[x][y].endpoint = FALSE;
             maze->cells[x][y].connections = EMPTY;
         }
     }
@@ -67,10 +66,10 @@ static u16 GetUnvisitedNeighbors(u16 x, u16 y, struct Maze *maze)
 static u16 SelectRandomBit(u16 bitfield)
 {
     s32 i, count = 0;
-    static u16 options[16];
+    u16 options[16];
     
     // Find 'on' bits and store in array to pick from.
-    for (i = 0; i < 16; i++)
+    for (i = 0; i < 16; ++i)
     {
         if (bitfield & (1 << i))
         {
@@ -104,24 +103,21 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height)
     {
         stack[top] = origin;
         origin->visited = TRUE;
+        origin->distance = top;
         candidates = GetUnvisitedNeighbors(origin->x, origin->y, maze);
 
         // If there are no unvisited neighbors, pop the stack and recurse
         // to the previous cell. If the stack is empty, break the loop.
         if (!candidates || top >= max)
         {
-            top--;
+            if ((origin->connections & (origin->connections - 1)) == 0) // single bit = endpoint
+                origin->endpoint = TRUE;
+            else
+                origin->endpoint = FALSE;
+
+            top--; // pop the stack
             if (top <= 0)
                 break;
-            origin = stack[top];
-        }
-        // If the top of the stack exceeds the stack limit, pop the stack
-        // and recurse. This increments the visited cells by more than 1
-        // to purposefully create unfilled mazes.
-        else if (top > max)
-        {
-            visited += 3;
-            top--;
             origin = stack[top];
         }
         // Otherwise, select a random neighbor to become the new origin
@@ -155,6 +151,47 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height)
             top++;
         }
     }
+
+    // the final cell is an endpoint
+    origin->distance = top;
+    origin->endpoint = TRUE;
+}
+
+// Returns an array containing the endpoints of a maze, sorted by distance in
+// descending order.
+struct Cell **GetMazeEndpoints(struct Maze *maze)
+{
+    s32 x, y, i, j;
+    s32 distance, top = 0;
+    struct Cell *temp;
+    struct Cell **output = malloc(MAX_SPECIAL_ROOMS * sizeof **output);
+
+    for (i = 0; i < MAX_SPECIAL_ROOMS; i++) // Initialize output as null pointers.
+        output[i] = NULL;
+
+    for (x = 0; x < maze->width; ++x) // Pick out endpoints from the maze.
+    {
+        for (y = 0; y < maze->width; ++y)
+        {
+            if (maze->cells[x][y].endpoint && top < MAX_SPECIAL_ROOMS)
+            {
+                output[top] = &maze->cells[x][y];
+                top++;
+            }
+        }
+    }
+
+    for (i = 0; i < top; ++i) // Sort the list of endpoints by distance.
+    {
+        j = i;
+        while (j > 0 && output[i]->distance > output[j-1]->distance)
+        {
+            SWAP(output[j], output[j-1], temp)
+            j--;
+        }
+    }
+
+    return output;
 }
 
 // Copies a rectangular area of a map layout and stores it in a MapChunk struct.
@@ -166,16 +203,17 @@ static void CopyMapChunk(u16 x, u16 y, u16 width, u16 height, const struct MapLa
     dest->height = height;
     dest->map = malloc(sizeof(u16) * width * height);
 
-    for (i = 0; i < height; i++)
+    for (i = 0; i < height; ++i)
     {
-        for (j = 0; j < width; j++)
+        for (j = 0; j < width; ++j)
         {
             dest->map[j + width * i] = src->map[src->width * (y + i) + x + j];
         }
     }
 }
 
-// Pastes a rectangular area of a map layout over gBackupMapLayout at the given (x, y).
+// Pastes a rectangular area of a map layout over gBackupMapLayout at
+// the given (x, y) and frees the map stored in the MapChunk.
 static void PasteMapChunk(u16 x, u16 y, struct MapChunk *chunk)
 {
     u16 *src, *dest;
@@ -183,12 +221,13 @@ static void PasteMapChunk(u16 x, u16 y, struct MapChunk *chunk)
     src = chunk->map;
     dest = gBackupMapLayout.map;
     dest += gBackupMapLayout.width * (7 + y) + x + MAP_OFFSET;
-    for (i = 0; i < chunk->height; i++)
+    for (i = 0; i < chunk->height; ++i)
     {
         CpuCopy16(src, dest, chunk->width * 2);
         dest += gBackupMapLayout.width;
         src += chunk->width;
     }
+    Free(chunk->map);
 }
 
 // The coordinates of map chunks on a map template.
@@ -223,9 +262,9 @@ struct Maze *GenerateMazeMap(u16 width, u16 height, const struct MapLayout *temp
     chunkWidth = 10;
     chunkHeight = 10;
 
-    for (x = 0; x < width; x++)
+    for (x = 0; x < width; ++x)
     {
-        for (y = 0; y < height; y++)
+        for (y = 0; y < height; ++y)
         {
             connections = maze.cells[x][y].connections;
             CopyMapChunk(sMapChunkCoordinateTable[connections][0] * chunkWidth,   \

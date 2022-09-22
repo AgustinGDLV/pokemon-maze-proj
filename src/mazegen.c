@@ -184,7 +184,8 @@ struct Cell **GetMazeEndpoints(struct Maze *maze)
     for (i = 0; i < top; ++i) // Sort the list of endpoints by distance.
     {
         j = i;
-        while (j > 0 && output[i]->distance > output[j-1]->distance)
+        distance = output[i]->distance;
+        while (j > 0 && distance > output[j-1]->distance)
         {
             SWAP(output[j], output[j-1], temp)
             j--;

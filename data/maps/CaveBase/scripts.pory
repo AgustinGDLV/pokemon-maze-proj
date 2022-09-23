@@ -1,0 +1,16 @@
+mapscripts CaveBase_MapScripts {
+    # Set object positions on load.
+    MAP_SCRIPT_ON_TRANSITION {
+        setobjectxyperm(1, 2, 2)
+    }
+}
+
+script TestScript {
+    # Show a different message, depending on the state of different flags.
+    lock
+    faceplayer
+    special(ChooseRandomItem)
+    giveitem(VAR_RESULT)
+    release
+    end
+}

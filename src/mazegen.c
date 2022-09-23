@@ -1,9 +1,12 @@
 #include "global.h"
+#include "event_data.h"
 #include "fieldmap.h"
+#include "item.h"
 #include "malloc.h"
 #include "mazegen.h"
 #include "mgba_printf/mgba.h"
 #include "random.h"
+#include "constants/items.h"
 
 // ***********************************************************************
 // mazegen.c
@@ -276,4 +279,15 @@ struct Maze *GenerateMazeMap(u16 width, u16 height, const struct MapLayout *temp
     }
 
     return &maze;
+}
+
+static const u16 sMazeLootTable[] = {
+    ITEM_POKE_BALL,
+    ITEM_POTION,
+    ITEM_RARE_CANDY,
+};
+
+void ChooseRandomItem(void)
+{
+    gSpecialVar_Result = sMazeLootTable[Random() % ARRAY_COUNT(sMazeLootTable)];
 }

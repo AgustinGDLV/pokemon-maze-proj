@@ -27,6 +27,9 @@ struct MapChunk {
     u16 *map;
 };
 
+EWRAM_DATA struct Maze *gMazeStruct = NULL;
+EWRAM_DATA struct Cell **gMazeEndpoints = NULL;
+
 // Initializes the cells in a Maze struct as unvisited and with 
 // correct coordinates.
 static void InitMaze(struct Maze *maze)
@@ -232,6 +235,7 @@ static void PasteMapChunk(u16 x, u16 y, struct MapChunk *chunk)
         src += chunk->width;
     }
     Free(chunk->map);
+    chunk->map = NULL;
 }
 
 // The coordinates of map chunks on a map template.
@@ -291,3 +295,5 @@ void ChooseRandomItem(void)
 {
     gSpecialVar_Result = sMazeLootTable[Random() % ARRAY_COUNT(sMazeLootTable)];
 }
+
+

@@ -537,3 +537,4 @@ gSpecials::
 	def_special SetTotemBoost
 	def_special TrySpecialOverworldEvo
 	def_special ChooseRandomItem
+	def_special OpenMazeMinimap

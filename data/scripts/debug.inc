@@ -55,6 +55,10 @@ Debug_FlagsNotSetMessage_Text:
 	.string "'include/constants/overworld{UNDERSCORE}config.h'!$"
 
 Debug_Script_1::
+	fadescreen FADE_TO_BLACK
+	special OpenMazeMinimap
+	waitstate
+	releaseall
 	end
 
 Debug_Script_2::

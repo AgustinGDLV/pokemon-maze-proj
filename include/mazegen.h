@@ -26,4 +26,7 @@ struct Maze
 struct Maze *GenerateMazeMap(u16 width, u16 height, const struct MapLayout *template);
 struct Cell **GetMazeEndpoints(struct Maze *maze);
 
+extern struct Maze *gMazeStruct;
+extern struct Cell **gMazeEndpoints;
+
 #endif // GUARD_MAZEGEN_H

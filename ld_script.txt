@@ -343,6 +343,7 @@ SECTIONS {
         src/international_string_util.o(.text);
         src/pokemon_debug.o(.text);
         src/mazegen.o(.text);
+        src/maze_minimap.o(.text);
         src/mgba_printf/mgba.o(.text);
         src/mgba_printf/mini_printf.o(.text);
     } =0
@@ -712,6 +713,7 @@ SECTIONS {
         data/sound_data.o(.rodata);
         src/pokemon_debug.o(.rodata);
         src/mazegen.o(.rodata);
+        src/maze_minimap.o(.rodata);
         src/mgba_printf/mgba.o(.rodata);
     } =0
 

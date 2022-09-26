@@ -14,10 +14,12 @@
 #include "field_poison.h"
 #include "field_screen_effect.h"
 #include "field_specials.h"
+#include "field_weather.h"
 #include "fldeff_misc.h"
 #include "item_menu.h"
 #include "link.h"
 #include "match_call.h"
+#include "maze_minimap.h"
 #include "metatile_behavior.h"
 #include "overworld.h"
 #include "pokemon.h"
@@ -138,6 +140,9 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
         input->DEBUG_SYSTEM_TRIGGER_EVENT = FALSE;
     }
 #endif
+
+    if (heldKeys & L_BUTTON)
+        input->input_field_1_0 = TRUE;
 }
 
 int ProcessPlayerFieldInput(struct FieldInput *input)
@@ -196,6 +201,13 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     }
     if (input->pressedSelectButton && UseRegisteredKeyItemOnField() == TRUE)
         return TRUE;
+    
+    if (input->input_field_1_0)
+    {
+        FadeScreen(FADE_TO_BLACK, 0);
+        ShowMazeMinimap();
+        return TRUE;
+    }
 
 #if DEBUG_SYSTEM_ENABLE == TRUE && DEBUG_SYSTEM_IN_MENU == FALSE
     if (input->input_field_1_2)

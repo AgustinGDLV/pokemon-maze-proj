@@ -56,7 +56,7 @@ Debug_FlagsNotSetMessage_Text:
 
 Debug_Script_1::
 	fadescreen FADE_TO_BLACK
-	special OpenMazeMinimap
+	special ShowMazeMinimap
 	waitstate
 	releaseall
 	end

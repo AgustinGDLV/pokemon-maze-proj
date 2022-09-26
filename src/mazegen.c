@@ -132,25 +132,54 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height)
         {
             switch (SelectRandomBit(candidates))
             {
+                bool8 ignoreNeighbor = FALSE; //(Random() % 100 < 80);
                 case NORTH:
-                    origin->connections |= NORTH;
-                    origin = &maze->cells[origin->x][origin->y-1];
-                    origin->connections |= SOUTH;
+                    if (!ignoreNeighbor)
+                    {
+                        origin->connections |= NORTH;
+                        origin = &maze->cells[origin->x][origin->y-1];
+                        origin->connections |= SOUTH;
+                    }
+                    else
+                    {
+                        maze->cells[origin->x][origin->y-1].visited = TRUE;
+                    }
                     break;
                 case EAST:
-                    origin->connections |= EAST;
-                    origin = &maze->cells[origin->x+1][origin->y];
-                    origin->connections |= WEST;
+                    if (!ignoreNeighbor)
+                    {
+                        origin->connections |= EAST;
+                        origin = &maze->cells[origin->x+1][origin->y];
+                        origin->connections |= WEST;
+                    }
+                    else
+                    {
+                        maze->cells[origin->x][origin->y-1].visited = TRUE;
+                    }
                     break;
                 case SOUTH:
-                    origin->connections |= SOUTH;
-                    origin = &maze->cells[origin->x][origin->y+1];
-                    origin->connections |= NORTH;
+                    if (!ignoreNeighbor)
+                    {
+                        origin->connections |= SOUTH;
+                        origin = &maze->cells[origin->x][origin->y+1];
+                        origin->connections |= NORTH;
+                    }
+                    else
+                    {
+                        maze->cells[origin->x][origin->y-1].visited = TRUE;
+                    }
                     break;
                 case WEST:
-                    origin->connections |= WEST;
-                    origin = &maze->cells[origin->x-1][origin->y];
-                    origin->connections |= EAST;
+                    if (!ignoreNeighbor)
+                    {
+                        origin->connections |= WEST;
+                        origin = &maze->cells[origin->x-1][origin->y];
+                        origin->connections |= EAST;
+                    }
+                    else
+                    {
+                        maze->cells[origin->x][origin->y-1].visited = TRUE;
+                    }
                     break;
             }
             visited++;
@@ -158,9 +187,12 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height)
         }
     }
 
-    // the final cell is an endpoint
-    origin->distance = top;
-    origin->endpoint = TRUE;
+    // the final cell is an endpoint if the loop didn't break
+    if (top > 0)
+    {
+        origin->distance = top;
+        origin->endpoint = TRUE;
+    }
 }
 
 // Returns an array containing the endpoints of a maze, sorted by distance in

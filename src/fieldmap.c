@@ -115,14 +115,8 @@ static void InitMapLayoutData(struct MapHeader *mapHeader)
     if (mapHeader->mapLayoutId == Overworld_GetMapHeaderByGroupAndId(MAP_GROUP(CAVE_BASE), MAP_NUM(CAVE_BASE))->mapLayoutId)
     {
         SeedRng(gSaveBlock1Ptr->mazeSeed);
-        gMazeStruct = GenerateMazeMap(8, 5, Overworld_GetMapHeaderByGroupAndId(MAP_GROUP(CAVE_TEMPLATE_1), MAP_NUM(CAVE_TEMPLATE_1))->mapLayout);
+        gMazeStruct = GenerateMazeMap(8, 5, &gMazeTemplates[CAVE_TEMPLATE_SET]);
         gMazeEndpoints = GetMazeEndpoints(gMazeStruct);
-        for (i = 0; i < MAX_SPECIAL_ROOMS; i++)
-        {
-            if (gMazeEndpoints[i] == NULL)
-                break;
-            MgbaPrintf(MGBA_LOG_INFO, "%d: (%d, %d), %d away", i, gMazeEndpoints[i]->x, gMazeEndpoints[i]->y, gMazeEndpoints[i]->distance);
-        }
     }
     else if (width * height <= MAX_MAP_DATA_SIZE)
     {

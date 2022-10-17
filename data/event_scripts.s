@@ -1061,3 +1061,9 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/maps/CaveBase/scripts.inc"
 
 	.include "data/maps/CaveTemplate_1/scripts.inc"
+
+	.include "data/maps/CaveTemplate_2/scripts.inc"
+
+	.include "data/maps/CaveTemplate_3/scripts.inc"
+
+	.include "data/maps/CaveTemplate_4/scripts.inc"

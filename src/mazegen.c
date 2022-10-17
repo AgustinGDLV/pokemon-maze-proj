@@ -5,8 +5,11 @@
 #include "malloc.h"
 #include "mazegen.h"
 #include "mgba_printf/mgba.h"
+#include "overworld.h"
 #include "random.h"
 #include "constants/items.h"
+#include "constants/maps.h"
+#include "constants/map_groups.h"
 
 // ***********************************************************************
 // mazegen.c
@@ -30,6 +33,10 @@ struct MapChunk {
 EWRAM_DATA struct Maze *gMazeStruct = NULL;
 EWRAM_DATA struct Cell **gMazeEndpoints = NULL;
 
+#include "data/maze_templates.h"
+
+static u16 SelectTemplateNumber(u8 templateNum, const struct TemplateSet *templateSet);
+
 // Initializes the cells in a Maze struct as unvisited and with 
 // correct coordinates.
 static void InitMaze(struct Maze *maze)
@@ -42,6 +49,7 @@ static void InitMaze(struct Maze *maze)
         {
             maze->cells[x][y].x = x;
             maze->cells[x][y].y = y;
+            maze->cells[x][y].templateNum = 0;
             maze->cells[x][y].distance = 0;
             maze->cells[x][y].visited = FALSE;
             maze->cells[x][y].endpoint = FALSE;
@@ -88,9 +96,9 @@ static u16 SelectRandomBit(u16 bitfield)
 }
 
 // Generates a maze of given width and height into an empty Maze struct.
-static void GenerateMaze(struct Maze *maze, u16 width, u16 height)
+static void GenerateMaze(struct Maze *maze, u16 width, u16 height, const struct TemplateSet *templateSet)
 {
-    u32 x, y, candidates, max, top, visited;
+    u32 x, y, candidates, max, top, visited, templateNum;
     struct Cell *origin, *stack[width * height];
 
     // init stack
@@ -130,9 +138,9 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height)
         // point and document this connection.
         else
         {
+            bool8 ignoreNeighbor = FALSE; //(Random() % 100 < 25);
             switch (SelectRandomBit(candidates))
             {
-                bool8 ignoreNeighbor = FALSE; //(Random() % 100 < 80);
                 case NORTH:
                     if (!ignoreNeighbor)
                     {
@@ -270,7 +278,7 @@ static void PasteMapChunk(u16 x, u16 y, struct MapChunk *chunk)
     chunk->map = NULL;
 }
 
-// The coordinates of map chunks on a map template.
+// The (x, y) coordinates of map chunks on a map template.
 static const u16 sMapChunkCoordinateTable[][2] = {
     [EMPTY] = {0, 0},
     [NORTH] = {0, 1},
@@ -290,27 +298,74 @@ static const u16 sMapChunkCoordinateTable[][2] = {
     [NORTH | EAST | SOUTH | WEST] = {3, 3},
 };
 
+// The (x, y) coordinates of a variety of a map template within its layout.
+static const u16 sVarietyOffsetTable[][2] = {
+    [0] = {0, 0},
+    [1] = {1, 0},
+    [2] = {0, 1},
+    [3] = {1, 1},
+};
+
+// Returns which template to use for a given cell based on its previous
+// connection.
+static u16 SelectTemplateNumber(u8 templateNum, const struct TemplateSet *templateSet) {
+    s32 i;
+    u16 rand = Random() % templateSet->totalWeight;
+
+    for (i = 0; i < templateSet->templateCount; ++i)
+    {
+        if (rand < templateSet->adjacencyWeights[templateNum][i])
+            return i;
+        else
+            rand -= templateSet->adjacencyWeights[templateNum][i];
+    }
+
+    return 0; // catch bad total weight
+}
+
+// Returns what variety of a map template should be used to create
+// a map chunk.
+static u16 SelectTemplateVariety(const struct MapTemplate *template)
+{
+    s32 i;
+    u16 rand = Random() % template->totalWeight;
+
+    for (i = 0; i < MAX_VARIETIES; ++i)
+    {
+        if (rand < template->varietyWeights[i])
+            return i;
+        else
+            rand -= template->varietyWeights[i];
+    }
+
+    return 0; // catch bad total weight
+}
+
 // Generates a maze from a template layout containing map chunks. The width
 // and height describe the "chunks" that make up the map.
-struct Maze *GenerateMazeMap(u16 width, u16 height, const struct MapLayout *template)
+struct Maze *GenerateMazeMap(u16 width, u16 height, const struct TemplateSet *templateSet)
 {
-    s32 x, y, chunkWidth, chunkHeight, connections;
-    static struct Maze maze;
+    s32 x, y;
+    u16 connections, variety;
     struct MapChunk chunk;
+    struct MapTemplate template;
+    static struct Maze maze;
+    const struct MapLayout *layout;
 
-    GenerateMaze(&maze, width, height);
-    chunkWidth = 10;
-    chunkHeight = 10;
+    GenerateMaze(&maze, width, height, templateSet);
 
     for (x = 0; x < width; ++x)
     {
         for (y = 0; y < height; ++y)
         {
             connections = maze.cells[x][y].connections;
-            CopyMapChunk(sMapChunkCoordinateTable[connections][0] * chunkWidth,   \
-                                    sMapChunkCoordinateTable[connections][1] * chunkHeight, \
-                                    chunkWidth, chunkHeight, template, &chunk);
-            PasteMapChunk(x * chunkWidth, y * chunkHeight, &chunk);
+            template = templateSet.templates[maze.cells[x][y].templateNum];
+            layout = Overworld_GetMapHeaderByGroupAndId(0, template.mapNumber)->mapLayout;
+            variety = SelectTemplateVariety(&template);
+            CopyMapChunk(sMapChunkCoordinateTable[connections][0]*templateSet->chunkWidth + 40*sVarietyOffsetTable[variety][0], \
+                        sMapChunkCoordinateTable[connections][1]*templateSet->chunkHeight + 40*sVarietyOffsetTable[variety][1], \
+                        templateSet->chunkWidth, templateSet->chunkHeight, layout, &chunk);
+            PasteMapChunk(x * templateSet->chunkWidth, y * templateSet->chunkHeight, &chunk);
         }
     }
 

@@ -4424,12 +4424,42 @@
     {
       "id": "LAYOUT_CAVE_TEMPLATE_1",
       "name": "CaveTemplate_1_Layout",
-      "width": 40,
-      "height": 40,
+      "width": 80,
+      "height": 80,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/CaveTemplate_1/border.bin",
       "blockdata_filepath": "data/layouts/CaveTemplate_1/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATE_2",
+      "name": "CaveTemplate_2_Layout",
+      "width": 80,
+      "height": 80,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplate_2/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplate_2/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATE_3",
+      "name": "CaveTemplate_3_Layout",
+      "width": 80,
+      "height": 80,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplate_3/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplate_3/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATE_4",
+      "name": "CaveTemplate_4_Layout",
+      "width": 80,
+      "height": 80,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplate_4/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplate_4/map.bin"
     }
   ]
 }

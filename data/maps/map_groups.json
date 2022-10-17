@@ -39,7 +39,10 @@
   ],
   "gMapGroup_Templates": [
     "CaveBase",
-    "CaveTemplate_1"
+    "CaveTemplate_1",
+    "CaveTemplate_2",
+    "CaveTemplate_3",
+    "CaveTemplate_4"
   ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",

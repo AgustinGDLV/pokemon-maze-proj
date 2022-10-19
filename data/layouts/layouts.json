@@ -4460,6 +4460,26 @@
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/CaveTemplate_4/border.bin",
       "blockdata_filepath": "data/layouts/CaveTemplate_4/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATE_WATER",
+      "name": "CaveTemplate_Water_Layout",
+      "width": 80,
+      "height": 80,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplate_Water/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplate_Water/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATE_WATER1",
+      "name": "CaveTemplate_Water1_Layout",
+      "width": 80,
+      "height": 80,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplate_Water1/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplate_Water1/map.bin"
     }
   ]
 }

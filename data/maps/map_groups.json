@@ -42,7 +42,9 @@
     "CaveTemplate_1",
     "CaveTemplate_2",
     "CaveTemplate_3",
-    "CaveTemplate_4"
+    "CaveTemplate_4",
+    "CaveTemplate_Water",
+    "CaveTemplate_Water1"
   ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",

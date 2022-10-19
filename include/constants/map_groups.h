@@ -6,11 +6,13 @@
 //
 
 // gMapGroup_Templates
-#define MAP_CAVE_BASE       (0 | (0 << 8))
-#define MAP_CAVE_TEMPLATE_1 (1 | (0 << 8))
-#define MAP_CAVE_TEMPLATE_2 (2 | (0 << 8))
-#define MAP_CAVE_TEMPLATE_3 (3 | (0 << 8))
-#define MAP_CAVE_TEMPLATE_4 (4 | (0 << 8))
+#define MAP_CAVE_BASE            (0 | (0 << 8))
+#define MAP_CAVE_TEMPLATE_1      (1 | (0 << 8))
+#define MAP_CAVE_TEMPLATE_2      (2 | (0 << 8))
+#define MAP_CAVE_TEMPLATE_3      (3 | (0 << 8))
+#define MAP_CAVE_TEMPLATE_4      (4 | (0 << 8))
+#define MAP_CAVE_TEMPLATE_WATER  (5 | (0 << 8))
+#define MAP_CAVE_TEMPLATE_WATER1 (6 | (0 << 8))
 
 // gMapGroup_TownsAndRoutes
 #define MAP_PETALBURG_CITY      (0 | (1 << 8))

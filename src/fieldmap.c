@@ -115,7 +115,7 @@ static void InitMapLayoutData(struct MapHeader *mapHeader)
     if (mapHeader->mapLayoutId == Overworld_GetMapHeaderByGroupAndId(MAP_GROUP(CAVE_BASE), MAP_NUM(CAVE_BASE))->mapLayoutId)
     {
         SeedRng(gSaveBlock1Ptr->mazeSeed);
-        gMazeStruct = GenerateMazeMap(8, 5, &gMazeTemplates[CAVE_TEMPLATE_SET]);
+        gMazeStruct = GenerateMazeMap(8, 5, &gMazeTemplates[CAVE_STAIRS_TEMPLATE_SET]);
         gMazeEndpoints = GetMazeEndpoints(gMazeStruct);
     }
     else if (width * height <= MAX_MAP_DATA_SIZE)

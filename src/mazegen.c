@@ -35,7 +35,8 @@ EWRAM_DATA struct Cell **gMazeEndpoints = NULL;
 
 #include "data/maze_templates.h"
 
-static u16 SelectTemplateNumber(u8 templateNum, const struct TemplateSet *templateSet);
+static u16 SelectTemplateNumber(u16 templateNum, u16 connection, const struct TemplateSet *templateSet);
+static u16 SelectTemplateVariety(const struct MapTemplate *template);
 
 // Initializes the cells in a Maze struct as unvisited and with 
 // correct coordinates.
@@ -98,7 +99,8 @@ static u16 SelectRandomBit(u16 bitfield)
 // Generates a maze of given width and height into an empty Maze struct.
 static void GenerateMaze(struct Maze *maze, u16 width, u16 height, const struct TemplateSet *templateSet)
 {
-    u32 x, y, candidates, max, top, visited, templateNum;
+    s32 x, y;
+    u16 candidates, max, top, visited, templateNum;
     struct Cell *origin, *stack[width * height];
 
     // init stack
@@ -111,6 +113,7 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height, const struct 
     maze->height = height;
     InitMaze(maze);
     origin = &maze->cells[0][0];
+    templateNum = origin->templateNum = 0;
 
     // Maze generation ends when every cell has been visited.
     while (visited < (maze->width * maze->height))
@@ -119,6 +122,7 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height, const struct 
         origin->visited = TRUE;
         origin->distance = top;
         candidates = GetUnvisitedNeighbors(origin->x, origin->y, maze);
+        templateNum = origin->templateNum;
 
         // If there are no unvisited neighbors, pop the stack and recurse
         // to the previous cell. If the stack is empty, break the loop.
@@ -147,6 +151,7 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height, const struct 
                         origin->connections |= NORTH;
                         origin = &maze->cells[origin->x][origin->y-1];
                         origin->connections |= SOUTH;
+                        origin->templateNum = SelectTemplateNumber(templateNum, SOUTH, templateSet);
                     }
                     else
                     {
@@ -159,6 +164,7 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height, const struct 
                         origin->connections |= EAST;
                         origin = &maze->cells[origin->x+1][origin->y];
                         origin->connections |= WEST;
+                        origin->templateNum = SelectTemplateNumber(templateNum, WEST, templateSet);
                     }
                     else
                     {
@@ -171,6 +177,8 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height, const struct 
                         origin->connections |= SOUTH;
                         origin = &maze->cells[origin->x][origin->y+1];
                         origin->connections |= NORTH;
+                        origin->templateNum = SelectTemplateNumber(templateNum, NORTH, templateSet);
+
                     }
                     else
                     {
@@ -183,6 +191,7 @@ static void GenerateMaze(struct Maze *maze, u16 width, u16 height, const struct 
                         origin->connections |= WEST;
                         origin = &maze->cells[origin->x-1][origin->y];
                         origin->connections |= EAST;
+                        origin->templateNum = SelectTemplateNumber(templateNum, EAST, templateSet);
                     }
                     else
                     {
@@ -308,19 +317,36 @@ static const u16 sVarietyOffsetTable[][2] = {
 
 // Returns which template to use for a given cell based on its previous
 // connection.
-static u16 SelectTemplateNumber(u8 templateNum, const struct TemplateSet *templateSet) {
+static u16 SelectTemplateNumber(u16 templateNum, u16 connection, const struct TemplateSet *templateSet) {
     s32 i;
-    u16 rand = Random() % templateSet->totalWeight;
-
-    for (i = 0; i < templateSet->templateCount; ++i)
+    u16 rand = Random() % templateSet->templates[templateNum].totalWeight;
+    u16 index;
+    
+    switch (connection) // get the proper index for adjacency table
     {
-        if (rand < templateSet->adjacencyWeights[templateNum][i])
-            return i;
-        else
-            rand -= templateSet->adjacencyWeights[templateNum][i];
+        case NORTH:
+            index = 0;
+            break;
+        case EAST:
+            index = 1;
+            break;
+        case SOUTH:
+            index = 2;
+            break;
+        case WEST:
+            index = 3;
+            break;
     }
 
-    return 0; // catch bad total weight
+    for (i = 0; i < templateSet->templateCount; ++i) // pick a random template from the table
+    {
+        if (rand < templateSet->templates[templateNum].adjacencyWeights[index][i])
+            return i;
+        else
+            rand -= templateSet->templates[templateNum].adjacencyWeights[index][i];
+    }
+
+    return templateNum;
 }
 
 // Returns what variety of a map template should be used to create
@@ -328,7 +354,7 @@ static u16 SelectTemplateNumber(u8 templateNum, const struct TemplateSet *templa
 static u16 SelectTemplateVariety(const struct MapTemplate *template)
 {
     s32 i;
-    u16 rand = Random() % template->totalWeight;
+    s16 rand = Random() % template->totalWeight;
 
     for (i = 0; i < MAX_VARIETIES; ++i)
     {
@@ -338,7 +364,7 @@ static u16 SelectTemplateVariety(const struct MapTemplate *template)
             rand -= template->varietyWeights[i];
     }
 
-    return 0; // catch bad total weight
+    return 0;
 }
 
 // Generates a maze from a template layout containing map chunks. The width
@@ -359,7 +385,8 @@ struct Maze *GenerateMazeMap(u16 width, u16 height, const struct TemplateSet *te
         for (y = 0; y < height; ++y)
         {
             connections = maze.cells[x][y].connections;
-            template = templateSet.templates[maze.cells[x][y].templateNum];
+            template = templateSet->templates[maze.cells[x][y].templateNum];
+            MgbaPrintf(MGBA_LOG_INFO, "(%d, %d): %d", x, y, maze.cells[x][y].templateNum);
             layout = Overworld_GetMapHeaderByGroupAndId(0, template.mapNumber)->mapLayout;
             variety = SelectTemplateVariety(&template);
             CopyMapChunk(sMapChunkCoordinateTable[connections][0]*templateSet->chunkWidth + 40*sVarietyOffsetTable[variety][0], \

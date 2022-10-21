@@ -2851,9 +2851,10 @@ static void PrintNotEggInfo(void)
         else
             SetMonPicBackgroundPalette(TRUE);
     }
-    StringCopy(gStringVar1, gText_LevelSymbol);
-    ConvertIntToDecimalStringN(gStringVar2, summary->level, STR_CONV_MODE_LEFT_ALIGN, 3);
-    StringAppend(gStringVar1, gStringVar2);
+    // Don't print level.
+    //StringCopy(gStringVar1, gText_LevelSymbol);
+    //ConvertIntToDecimalStringN(gStringVar2, summary->level, STR_CONV_MODE_LEFT_ALIGN, 3);
+    //StringAppend(gStringVar1, gStringVar2);
     PrintTextOnWindow(PSS_LABEL_WINDOW_PORTRAIT_SPECIES, gStringVar1, 24, 17, 0, 1);
     GetMonNickname(mon, gStringVar1);
     PrintTextOnWindow(PSS_LABEL_WINDOW_PORTRAIT_NICKNAME, gStringVar1, 0, 1, 0, 1);

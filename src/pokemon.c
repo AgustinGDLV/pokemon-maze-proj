@@ -3917,7 +3917,7 @@ void CalculateMonStats(struct Pokemon *mon)
     s32 spDefenseIV = GetMonData(mon, MON_DATA_SPDEF_IV, NULL);
     s32 spDefenseEV = GetMonData(mon, MON_DATA_SPDEF_EV, NULL);
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
-    s32 level = GetLevelFromMonExp(mon);
+    s32 level = 50; // Calculate stats as if Level 50.
     s32 newMaxHP;
 
     SetMonData(mon, MON_DATA_LEVEL, &level);

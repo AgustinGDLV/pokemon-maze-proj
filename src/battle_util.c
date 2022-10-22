@@ -9302,7 +9302,10 @@ static s32 DoMoveDamageCalc(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType,
     // Add a random factor.
     if (randomFactor)
     {
-        dmg *= 100 - (Random() % 16);
+        if (GetBattlerHoldEffect(battlerAtk, TRUE) == HOLD_EFFECT_POKER_CHIPS)
+            dmg *= 150 - (Random() % 76); // range from 150% damage to 75%, instead of 100% to 85%
+        else
+            dmg *= 100 - (Random() % 16);
         dmg /= 100;
     }
 

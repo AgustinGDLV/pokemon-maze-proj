@@ -9867,4 +9867,17 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
         .flingPower = 30,
     },
+
+    [ITEM_POKER_CHIPS] =
+    {
+        .name = _("Poker Chips"),
+        .itemId = ITEM_POKER_CHIPS,
+        .price = 1000,
+        .holdEffect = HOLD_EFFECT_POKER_CHIPS,
+        .description = sPokerChipsDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .flingPower = 30,
+    },
 };

@@ -1933,3 +1933,6 @@ const u32 gItemIconPalette_Sapphire[] = INCBIN_U32("graphics/items/icon_palettes
 
 const u32 gItemIcon_9Volt[] = INCBIN_U32("graphics/items/icons/9_volt.4bpp.lz");
 const u32 gItemIconPalette_9Volt[] = INCBIN_U32("graphics/items/icon_palettes/9_volt.gbapal.lz");
+
+const u32 gItemIcon_PokerChips[] = INCBIN_U32("graphics/items/icons/poker_chips.4bpp.lz");
+const u32 gItemIconPalette_PokerChips[] = INCBIN_U32("graphics/items/icon_palettes/poker_chips.gbapal.lz");

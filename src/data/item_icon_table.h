@@ -805,6 +805,7 @@ const u32 *const gItemIconTable[][2] =
     [ITEM_SAPPHIRE] = {gItemIcon_Gem, gItemIconPalette_Sapphire},
     // New Battle Items
     [ITEM_9_VOLT] = {gItemIcon_9Volt, gItemIconPalette_9Volt},
+    [ITEM_POKER_CHIPS] = {gItemIcon_PokerChips, gItemIconPalette_PokerChips},
     // Return to field arrow
     [ITEM_FIELD_ARROW] = {gItemIcon_ReturnToFieldArrow, gItemIconPalette_ReturnToFieldArrow},
 };

@@ -3797,3 +3797,8 @@ static const u8 s9VoltDesc[] = _(
     "Allows powerful\n"
     "moves to be used\n"
     "without recharge.");
+
+static const u8 sPokerChipsDesc[] = _(
+    "Increases the\n"
+    "damage range\n"
+    "of attacks.");

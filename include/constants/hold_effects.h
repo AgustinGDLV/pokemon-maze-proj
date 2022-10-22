@@ -153,7 +153,8 @@
 #define HOLD_EFFECT_THROAT_SPRAY        174
 
 // Gen9+ hold effects
-#define HOLD_EFFECT_9_VOLT  175
+#define HOLD_EFFECT_9_VOLT      175
+#define HOLD_EFFECT_POKER_CHIPS 176
 
 #define HOLD_EFFECT_CHOICE(holdEffect)((holdEffect == HOLD_EFFECT_CHOICE_BAND || holdEffect == HOLD_EFFECT_CHOICE_SCARF || holdEffect == HOLD_EFFECT_CHOICE_SPECS))
 

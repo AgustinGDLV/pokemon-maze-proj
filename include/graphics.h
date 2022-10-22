@@ -8674,6 +8674,8 @@ extern const u32 gItemIconPalette_Tea[];
 extern const u32 gItemIcon_Gem[];
 extern const u32 gItemIconPalette_Ruby[];
 extern const u32 gItemIconPalette_Sapphire[];
+extern const u32 gItemIcon_9Volt[];
+extern const u32 gItemIconPalette_9Volt[];
 
 extern const u32 gItemIcon_ReturnToFieldArrow[];
 extern const u32 gItemIconPalette_ReturnToFieldArrow[];

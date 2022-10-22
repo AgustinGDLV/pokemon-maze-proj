@@ -9852,4 +9852,19 @@ const struct Item gItems[] =
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
+
+// New Battle Items
+
+    [ITEM_9_VOLT] =
+    {
+        .name = _("9-Volt"),
+        .itemId = ITEM_9_VOLT,
+        .price = 1000,
+        .holdEffect = HOLD_EFFECT_9_VOLT,
+        .description = s9VoltDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .flingPower = 30,
+    },
 };

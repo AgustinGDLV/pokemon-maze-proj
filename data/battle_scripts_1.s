@@ -529,7 +529,8 @@ BattleScript_EffectMeteorBeam::
 	setbyte sTWOTURN_STRINGID, B_MSG_TURN1_METEOR_BEAM
 	call BattleScript_FirstChargingTurnMeteorBeam
 	jumpifnoholdeffect BS_ATTACKER, HOLD_EFFECT_POWER_HERB, BattleScript_MoveEnd
-	call BattleScript_PowerHerbActivation
+	setbyte cMULTISTRING_CHOOSER, B_MSG_POWER_HERB_ACTIVATES
+	call BattleScript_ItemActivation
 	goto BattleScript_TwoTurnMovesSecondTurn
 
 BattleScript_FirstChargingTurnMeteorBeam::
@@ -4083,9 +4084,9 @@ BattleScript_EffectAccuracyDownHit::
 	setmoveeffect MOVE_EFFECT_ACC_MINUS_1
 	goto BattleScript_EffectHit
 
-BattleScript_PowerHerbActivation:
+BattleScript_ItemActivation::
 	playanimation BS_ATTACKER, B_ANIM_HELD_ITEM_EFFECT
-	printstring STRINGID_POWERHERB
+	printfromtable gItemActivationStringIds
 	waitmessage B_WAIT_TIME_LONG
 	removeitem BS_ATTACKER
 	return
@@ -4101,7 +4102,8 @@ BattleScript_EffectTwoTurnsAttack::
 BattleScript_EffectTwoTurnsAttackContinue:
 	call BattleScriptFirstChargingTurn
 	jumpifnoholdeffect BS_ATTACKER, HOLD_EFFECT_POWER_HERB, BattleScript_MoveEnd
-	call BattleScript_PowerHerbActivation
+	setbyte cMULTISTRING_CHOOSER, B_MSG_POWER_HERB_ACTIVATES
+	call BattleScript_ItemActivation
 	goto BattleScript_TwoTurnMovesSecondTurn
 BattleScript_EffectTwoTurnsAttackSkyAttack:
 	setbyte sTWOTURN_STRINGID, B_MSG_TURN1_SKY_ATTACK
@@ -4122,7 +4124,8 @@ BattleScript_EffectGeomancy:
 	setbyte sTWOTURN_STRINGID, B_MSG_TURN1_GEOMANCY
 	call BattleScriptFirstChargingTurn
 	jumpifnoholdeffect BS_ATTACKER, HOLD_EFFECT_POWER_HERB, BattleScript_MoveEnd
-	call BattleScript_PowerHerbActivation
+	setbyte cMULTISTRING_CHOOSER, B_MSG_POWER_HERB_ACTIVATES
+	call BattleScript_ItemActivation
 BattleScript_GeomancySecondTurn:
 	attackcanceler
 	setmoveeffect MOVE_EFFECT_CHARGING
@@ -5116,7 +5119,8 @@ BattleScript_EffectSkullBash::
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_SkullBashEnd::
 	jumpifnoholdeffect BS_ATTACKER, HOLD_EFFECT_POWER_HERB, BattleScript_MoveEnd
-	call BattleScript_PowerHerbActivation
+	setbyte cMULTISTRING_CHOOSER, B_MSG_POWER_HERB_ACTIVATES
+	call BattleScript_ItemActivation
 	goto BattleScript_TwoTurnMovesSecondTurn
 
 BattleScript_EffectTwister:
@@ -5152,7 +5156,8 @@ BattleScript_SolarBeamDecideTurn::
 	setbyte sTWOTURN_STRINGID, B_MSG_TURN1_SOLAR_BEAM
 	call BattleScriptFirstChargingTurn
 	jumpifnoholdeffect BS_ATTACKER, HOLD_EFFECT_POWER_HERB, BattleScript_MoveEnd
-	call BattleScript_PowerHerbActivation
+	setbyte cMULTISTRING_CHOOSER, B_MSG_POWER_HERB_ACTIVATES
+	call BattleScript_ItemActivation
 	goto BattleScript_TwoTurnMovesSecondTurn
 BattleScript_SolarBeamOnFirstTurn::
 	orword gHitMarker, HITMARKER_CHARGING
@@ -5242,7 +5247,8 @@ BattleScript_FirstTurnSemiInvulnerable::
 	call BattleScriptFirstChargingTurn
 	setsemiinvulnerablebit
 	jumpifnoholdeffect BS_ATTACKER, HOLD_EFFECT_POWER_HERB, BattleScript_MoveEnd
-	call BattleScript_PowerHerbActivation
+	setbyte cMULTISTRING_CHOOSER, B_MSG_POWER_HERB_ACTIVATES
+	call BattleScript_ItemActivation
 BattleScript_SecondTurnSemiInvulnerable::
 	attackcanceler
 	setmoveeffect MOVE_EFFECT_CHARGING

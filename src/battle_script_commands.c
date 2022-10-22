@@ -3236,10 +3236,19 @@ void SetMoveEffect(bool32 primary, u32 certain)
                 }
                 break;
             case MOVE_EFFECT_RECHARGE:
-                gBattleMons[gEffectBattler].status2 |= STATUS2_RECHARGE;
-                gDisableStructs[gEffectBattler].rechargeTimer = 2;
-                gLockedMoves[gEffectBattler] = gCurrentMove;
-                gBattlescriptCurrInstr++;
+                if (GetBattlerHoldEffect(gEffectBattler, TRUE) == HOLD_EFFECT_9_VOLT)
+                {
+                    BattleScriptPush(gBattlescriptCurrInstr + 1);
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_9_VOLT_ACTIVATES;
+                    gBattlescriptCurrInstr = BattleScript_ItemActivation;
+                }
+                else
+                {
+                    gBattleMons[gEffectBattler].status2 |= STATUS2_RECHARGE;
+                    gDisableStructs[gEffectBattler].rechargeTimer = 2;
+                    gLockedMoves[gEffectBattler] = gCurrentMove;
+                    gBattlescriptCurrInstr++;
+                }
                 break;
             case MOVE_EFFECT_RAGE:
                 gBattleMons[gBattlerAttacker].status2 |= STATUS2_RAGE;

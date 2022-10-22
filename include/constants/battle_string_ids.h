@@ -630,8 +630,9 @@
 #define STRINGID_ATTACKERHEALEDITSBURN                628
 #define STRINGID_ATTACKERMELTEDTHEICE                 629
 #define STRINGID_TARGETTOUGHEDITOUT                   630
+#define STRINGID_9VOLT                                631
 
-#define BATTLESTRINGS_COUNT                           631
+#define BATTLESTRINGS_COUNT                           632
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -909,5 +910,9 @@
 #define B_MSG_Z_RECOVER_HP    4
 #define B_MSG_Z_STAT_UP       5
 #define B_MSG_Z_HP_TRAP       6
+
+// gItemActivationStringIds
+#define B_MSG_POWER_HERB_ACTIVATES  0
+#define B_MSG_9_VOLT_ACTIVATES      1
 
 #endif // GUARD_CONSTANTS_BATTLE_STRING_IDS_H

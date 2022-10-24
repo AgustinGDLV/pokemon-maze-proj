@@ -151,3 +151,4 @@
 	.include "src/debug.o"
 	.include "src/mazegen.o"
 	.include "src/maze_minimap.o"
+	.include "src/sound_check_menu.o"

@@ -536,5 +536,6 @@ gSpecials::
 	def_special TrySetBattleTowerLinkType
 	def_special SetTotemBoost
 	def_special TrySpecialOverworldEvo
+	def_special PlaceItemBall
 	def_special ChooseRandomItem
 	def_special ShowMazeMinimap

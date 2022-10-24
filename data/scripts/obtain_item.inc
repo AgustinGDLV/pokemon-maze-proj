@@ -133,8 +133,14 @@ EventScript_FoundTMHM::
 	return
 
 EventScript_FoundItem::
-	message gText_PlayerFoundOneItem
-	return
+    compare VAR_0x8005, TRUE
+    goto_if_eq EventScript_FoundItemMessage
+    buffernumberstring 0, VAR_0x8005
+    message gText_PlayerFoundItems
+    return
+EventScript_FoundItemMessage::
+    message gText_PlayerFoundOneItem
+    return
 
 EventScript_NoRoomToPickUpItem::
 	msgbox gText_ObtainedTheItem, MSGBOX_DEFAULT

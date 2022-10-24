@@ -386,7 +386,6 @@ struct Maze *GenerateMazeMap(u16 width, u16 height, const struct TemplateSet *te
         {
             connections = maze.cells[x][y].connections;
             template = templateSet->templates[maze.cells[x][y].templateNum];
-            MgbaPrintf(MGBA_LOG_INFO, "(%d, %d): %d", x, y, maze.cells[x][y].templateNum);
             layout = Overworld_GetMapHeaderByGroupAndId(0, template.mapNumber)->mapLayout;
             variety = SelectTemplateVariety(&template);
             CopyMapChunk(sMapChunkCoordinateTable[connections][0]*templateSet->chunkWidth + 40*sVarietyOffsetTable[variety][0], \
@@ -399,15 +398,42 @@ struct Maze *GenerateMazeMap(u16 width, u16 height, const struct TemplateSet *te
     return &maze;
 }
 
-static const u16 sMazeLootTable[] = {
-    ITEM_POKE_BALL,
-    ITEM_POTION,
-    ITEM_RARE_CANDY,
+static const u16 sMazeLootTotalWeight = 175;
+static const u16 sMazeLootTable[][4] = {
+    {ITEM_POKE_BALL, 50, 5, 10},   // item, weight, min, max
+    {ITEM_POTION, 50, 5, 10},
+    {ITEM_ORAN_BERRY, 50, 5, 10},
+    {ITEM_SILK_SCARF, 25, 1, 1},
 };
+
+void PlaceItemBall(void)
+{
+    u16 x, y, block;
+    x = Random() % 10;
+    y = Random() % 10;
+    block = gBackupMapLayout.map[x + MAP_OFFSET + gBackupMapLayout.width * (y + MAP_OFFSET)];
+    while ((block & MAPGRID_COLLISION_MASK) >> MAPGRID_COLLISION_SHIFT)
+    {
+        x = Random() % 10;
+        y = Random() % 10;
+        block = gBackupMapLayout.map[x + MAP_OFFSET + gBackupMapLayout.width * (y + MAP_OFFSET)];
+    }
+    SetObjEventTemplateCoords(1, x, y);
+}
 
 void ChooseRandomItem(void)
 {
-    gSpecialVar_Result = sMazeLootTable[Random() % ARRAY_COUNT(sMazeLootTable)];
+    s32 i;
+    s16 rand = Random() % sMazeLootTotalWeight;
+
+    for (i = 0; i < ARRAY_COUNT(sMazeLootTable); ++i)
+    {
+        if (rand < sMazeLootTable[i][1])
+            break;
+        else
+            rand -= sMazeLootTable[i][1];
+    }
+
+    gSpecialVar_0x8000 = sMazeLootTable[i][0];
+    gSpecialVar_0x8001 = (Random() % (sMazeLootTable[i][3] - sMazeLootTable[i][2])) + sMazeLootTable[i][2];
 }
-
-

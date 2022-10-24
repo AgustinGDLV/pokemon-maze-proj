@@ -4,7 +4,6 @@
 #include "item.h"
 #include "malloc.h"
 #include "mazegen.h"
-#include "mgba_printf/mgba.h"
 #include "overworld.h"
 #include "random.h"
 #include "constants/items.h"
@@ -219,7 +218,7 @@ struct Cell **GetMazeEndpoints(struct Maze *maze)
     s32 x, y, i, j;
     s32 distance, top = 0;
     struct Cell *temp;
-    struct Cell **output = malloc(MAX_SPECIAL_ROOMS * sizeof **output);
+    struct Cell **output = Alloc(MAX_SPECIAL_ROOMS * sizeof **output);
 
     for (i = 0; i < MAX_SPECIAL_ROOMS; i++) // Initialize output as null pointers.
         output[i] = NULL;
@@ -257,7 +256,7 @@ static void CopyMapChunk(u16 x, u16 y, u16 width, u16 height, const struct MapLa
 
     dest->width = width;
     dest->height = height;
-    dest->map = malloc(sizeof(u16) * width * height);
+    dest->map = Alloc(sizeof(u16) * width * height);
 
     for (i = 0; i < height; ++i)
     {

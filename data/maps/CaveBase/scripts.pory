@@ -1,16 +1,28 @@
 mapscripts CaveBase_MapScripts {
     # Set object positions on load.
     MAP_SCRIPT_ON_TRANSITION {
-        setobjectxyperm(1, 2, 2)
+        special(PlaceItemBall)
+        clearflag(FLAG_MAZE_ITEM_BALL_1)
     }
 }
 
-script TestScript {
+script Common_RandomItemBall {
     # Show a different message, depending on the state of different flags.
-    lock
-    faceplayer
+    random(100)
+    goto_if_lt(VAR_RESULT, 5, Common_DoItemBallEncounter)
     special(ChooseRandomItem)
-    giveitem(VAR_RESULT)
-    release
+    callstd(STD_FIND_ITEM)
     end
+}
+
+script Common_DoItemBallEncounter {
+    setwildbattle(SPECIES_VOLTORB, 5)
+    playmoncry(SPECIES_VOLTORB, CRY_MODE_ENCOUNTER)
+    delay(20)
+	waitmoncry
+	dowildbattle
+	fadescreenswapbuffers(FADE_TO_BLACK)
+	removeobject(VAR_LAST_TALKED)
+	fadescreenswapbuffers(FADE_FROM_BLACK)
+	end
 }

@@ -98,7 +98,7 @@ void InitTrainerHillMap(void)
     CpuFastFill16(MAPGRID_UNDEFINED, sBackupMapData, sizeof(sBackupMapData));
     GenerateTrainerHillFloorLayout(sBackupMapData);
 }
-#include "mgba_printf/mgba.h"
+
 static void InitMapLayoutData(struct MapHeader *mapHeader)
 {
     struct MapLayout const *mapLayout;

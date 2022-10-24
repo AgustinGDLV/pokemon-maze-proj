@@ -15,7 +15,6 @@
 #include "mazegen.h"
 #include "malloc.h"
 #include "menu.h"
-#include "mgba_printf/mgba.h"
 #include "overworld.h"
 #include "random.h"
 #include "palette.h"

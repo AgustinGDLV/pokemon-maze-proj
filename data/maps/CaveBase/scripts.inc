@@ -5,7 +5,8 @@ CaveBase_MapScripts::
 CaveBase_MapScripts_MAP_SCRIPT_ON_TRANSITION:
 	special PlaceItemBall
 	clearflag FLAG_MAZE_ITEM_BALL_1
-	end
+	return
+
 
 Common_RandomItemBall::
 	random 100
@@ -14,8 +15,9 @@ Common_RandomItemBall::
 	callstd STD_FIND_ITEM
 	end
 
+
 Common_DoItemBallEncounter::
-	setwildbattle SPECIES_VOLTORB, 30
+	setwildbattle SPECIES_VOLTORB, 5
 	playmoncry SPECIES_VOLTORB, CRY_MODE_ENCOUNTER
 	delay 20
 	waitmoncry
@@ -23,5 +25,5 @@ Common_DoItemBallEncounter::
 	fadescreenswapbuffers FADE_TO_BLACK
 	removeobject VAR_LAST_TALKED
 	fadescreenswapbuffers FADE_FROM_BLACK
-	release
 	end
+

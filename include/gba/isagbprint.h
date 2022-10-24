@@ -17,7 +17,7 @@
 #define DebugAssert(pFile, nLine, pExpression, nStopProgram)
 #else
 
-bool32 MgbaOpen(void);
+bool8 MgbaOpen(void);
 void MgbaClose(void);
 void MgbaPrintf(s32 level, const char *pBuf, ...);
 void MgbaAssert(const char *pFile, s32 nLine, const char *pExpression, bool32 nStopProgram);

@@ -213,7 +213,7 @@ void NoCashGBAAssert(const char *pFile, s32 nLine, const char *pExpression, bool
 #if (LOG_HANDLER == LOG_HANDLER_MGBA_PRINT)
 #define MGBA_REG_DEBUG_MAX (256)
 
-bool32 MgbaOpen(void)
+bool8 MgbaOpen(void)
 {
     *REG_DEBUG_ENABLE = 0xC0DE;
     return *REG_DEBUG_ENABLE == 0x1DEA;

@@ -344,8 +344,6 @@ SECTIONS {
         src/pokemon_debug.o(.text);
         src/mazegen.o(.text);
         src/maze_minimap.o(.text);
-        src/mgba_printf/mgba.o(.text);
-        src/mgba_printf/mini_printf.o(.text);
         src/sound_check_menu.o(.text);
     } =0
 
@@ -715,8 +713,6 @@ SECTIONS {
         src/pokemon_debug.o(.rodata);
         src/mazegen.o(.rodata);
         src/maze_minimap.o(.rodata);
-        src/mgba_printf/mgba.o(.rodata);
-        src/sound_check_menu.o(.rodata);
     } =0
 
     song_data :

@@ -62,6 +62,8 @@ Debug_Script_1::
 	end
 
 Debug_Script_2::
+	trainerbattle_single TRAINER_RANDOM, Route102_Text_CalvinIntro, Route102_Text_CalvinDefeated
+	release
 	end
 
 Debug_Script_3::

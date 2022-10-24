@@ -10260,4 +10260,17 @@ const struct Trainer gTrainers[] = {
         .aiFlags = 0,
         .party = NO_ITEM_DEFAULT_MOVES(sParty_MayLinkPlaceholder),
     },
+
+    [TRAINER_RANDOM] =
+    {
+        .trainerClass = TRAINER_CLASS_BUG_CATCHER,
+        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+        .trainerPic = TRAINER_PIC_RED,
+        .trainerName = _("Test"),
+        .items = {},
+        .doubleBattle = FALSE,
+        .aiFlags = 0,
+        .partyFlags = F_TRAINER_RANDOM,
+        .partySize = 6,
+    }
 };

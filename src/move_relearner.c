@@ -748,7 +748,7 @@ static void DoMoveRelearnerMain(void)
         if (JOY_NEW(A_BUTTON))
         {
             PlaySE(SE_SELECT);
-            sMoveRelearnerStruct->state = MENU_STATE_FADE_AND_RETURN;
+            sMoveRelearnerStruct->state = MENU_STATE_SETUP_BATTLE_MODE;
         }
         break;
     }

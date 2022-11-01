@@ -3030,4 +3030,8 @@ extern const u8 gText_BoxName[];
 extern const u8 gText_PkmnsNickname[];
 extern const u8 gText_TellHimTheWords[];
 
+// Party Menu Add-Ons
+extern const u8 gText_PartyNickname[];
+extern const u8 gText_PartyChooseMoves[];
+
 #endif // GUARD_STRINGS_H

@@ -1933,11 +1933,10 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
             }
             case F_TRAINER_RANDOM:
             {
-                const struct TrainerMonItemCustomMoves *partyData = gSampleTrainers[1];
+                const struct TrainerMonCustomAll *partyData = gSampleTrainers[1];
 
                 personalityValue += nameHash << 8;
-                fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, 0, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
 
                 SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
 
@@ -1946,6 +1945,13 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
                     SetMonData(&party[i], MON_DATA_MOVE1 + j, &partyData[i].moves[j]);
                     SetMonData(&party[i], MON_DATA_PP1 + j, &gBattleMoves[partyData[i].moves[j]].pp);
                 }
+
+                for (j = 0; j < NUM_STATS; j++) // note: hp, atk, def, spe, spA, spD
+                {
+                    SetMonData(&party[i], MON_DATA_HP_IV + j, &partyData[i].IVs[j]);
+                    SetMonData(&party[i], MON_DATA_HP_EV + j, &partyData[i].EVs[j]);
+                }
+
                 break;
             }
             }
